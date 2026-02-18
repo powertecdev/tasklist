@@ -15,14 +15,15 @@ const app = express();
 
 app.use(helmet());
 
-// CORS com múltiplas origens
 const allowedOrigins = env.CORS_ORIGIN.split(",").map((o) => o.trim());
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.some((allowed) => origin === allowed || origin.endsWith(".vercel.app"))) {
       callback(null, true);
     } else {
-      callback(new Error("Bloqueado pelo CORS"));
+      console.log("CORS bloqueado para:", origin);
+      callback(null, false);
     }
   },
   credentials: true,
@@ -45,7 +46,7 @@ app.use(errorHandler);
 
 app.listen(env.PORT, () => {
   console.log("\n🚀 Server rodando em http://localhost:" + env.PORT);
-  console.log("📊 Health check: http://localhost:" + env.PORT + "/api/health");
+  console.log("🌍 CORS: " + allowedOrigins.join(", ") + " + *.vercel.app");
   console.log("🌍 Ambiente: " + env.NODE_ENV + "\n");
 });
 
