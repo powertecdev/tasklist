@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { LayoutDashboard, CheckSquare, Users, ClipboardList, LogOut } from "lucide-react";
+import { LayoutDashboard, CheckSquare, Users, ClipboardList, List, LogOut } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 
 export default function Sidebar() {
@@ -25,8 +25,11 @@ export default function Sidebar() {
         <NavLink to="/my-tasks" className={linkClass}>
           <CheckSquare size={20} /> Minhas Tarefas
         </NavLink>
+        <NavLink to="/all-tasks" className={linkClass}>
+          <List size={20} /> Todas as Tarefas
+        </NavLink>
         <NavLink to="/team-tasks" className={linkClass}>
-          <ClipboardList size={20} /> Tarefas da Equipe
+          <ClipboardList size={20} /> Equipe
         </NavLink>
         {isAdmin && (
           <NavLink to="/employees" className={linkClass}>
