@@ -14,23 +14,33 @@ import dashboardRoutes from "./routes/dashboardRoutes";
 const app = express();
 
 app.use(helmet());
-app.use(cors({ origin: env.CORS_ORIGIN, credentials: true }));
+
+// CORS com múltiplas origens
+const allowedOrigins = env.CORS_ORIGIN.split(",").map((o) => o.trim());
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Bloqueado pelo CORS"));
+    }
+  },
+  credentials: true,
+}));
+
 app.use(express.json());
 app.use(cookieParser());
 
-// Health check
 app.get("/api/health", (_req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString(), uptime: process.uptime() });
 });
 
-// Rotas
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/tasks", commentRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 
-// Error handler
 app.use(errorHandler);
 
 app.listen(env.PORT, () => {
