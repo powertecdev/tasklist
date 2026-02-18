@@ -36,7 +36,7 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    command: sh -c "npx prisma db push --accept-data-loss && npx prisma db seed && npm start"
+    command: sh -c "sleep 10 && npx prisma db push --accept-data-loss && npx prisma db seed && npm start"
 
   frontend:
     build:
